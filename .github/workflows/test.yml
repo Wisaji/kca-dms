@@ -1,21 +1,18 @@
-name: Run JUnit Tests
+name: DMS CI
 
-on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:  # <-- add this line. This creates the button
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-
-    - name: Build and Test
-      run: mvn -B clean test --file pom.xml
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Run Tests
+        run: mvn -B test
+      - name: Run Demo for Console Output
+        run: mvn -B exec:java -Dexec.mainClass="ke.ac.kca.dms.Main"
